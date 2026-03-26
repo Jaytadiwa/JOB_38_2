@@ -6,6 +6,9 @@ login_window.geometry("390x900")
 login_window.configure(bg='#333333')
 import json
 import os
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
 
 # Check if file exists
 if not os.path.exists("info.json"):
@@ -30,21 +33,82 @@ def MkAcc():
 def create_main_window():
     main_window= tk.Toplevel()
     login_window.withdraw()
-    main_window.configure(bg="#232796")
+    main_window.configure(bg='#333333')
     main_window.geometry("590x500")
-    frame=tk.Frame(main_window)
+    frame=tk.Frame(main_window,bg='#333333')
     #create labels
-    workout_B= tk.Button(frame,text="calorie tracker",bg="#333333", command= lambda: CalorieTracker(main_window))
+    workout_B= tk.Button(frame,text="calorie tracker",bg="#7F0587",font=("Arial",18), command= lambda: CalorieTracker(main_window))
     #insatiate button
     workout_B.grid(row=1,column=1,sticky="news")
-    frame.pack()
+    frame.pack(expand=True)
 def CalorieTracker(main_window):
     calorietracker= tk.Toplevel(main_window)
     main_window.withdraw()
-    calorietracker.configure(bg="#232796")
+    calorietracker.configure(bg='#333333')
     calorietracker.geometry("590x500")
-    frame=tk.Frame(calorietracker)
+    
+    frame=tk.Frame(calorietracker,bg='#333333')
+    frame.pack(expand=True)
+    
+    
+    x_entry = tk.Entry(frame,)
+    x_label = tk.Label(frame,text="DAY OF MONTH",bg='#333333', fg="#FFFFFF",font=("Arial",18))
+    y_entry = tk.Entry(frame)
+    y_label = tk.Label(frame,text="Calories intaken",bg='#333333', fg="#FFFFFF",font=("Arial",18))
+    generate_graph = tk.Label(frame,text="Generate Graph",bg="#C5228F", fg="#FFFFFF",font=("Arial",14))
+    Back_button = tk.Button(frame,text="Back to home",bg="#333333", fg="#FFFFFF",font=("Arial",13), command= lambda: create_main_window())
+    
+    generate_graph.grid(row=3,column=0,columnspan=1,pady=5,sticky="ew")
+    Back_button.grid(row=3,column=3,pady=20)
+    x_label.grid(row=1,column=0,pady=20)
+    y_label.grid(row=2,column=0,pady=20)
+    x_entry.grid(row=1,column=1,pady=20)
+    y_entry.grid(row=2,column=1,pady=20)
+    y=[0]
+    x=[0]
+    # show grapgh is up here as you need to make the function come before the button
+    def sort_x(x,y):
+        x_list = int(x_entry.get())
+        y_list = int(y_entry.get())
+        y.append(y_list)
+        x.append(x_list)
+        temp=""
+        n=len(x)
+        swapped = True
+        while n > 0 and swapped:
+             swapped = False
+             n = n - 1
+             for i in range (0,n):
+                if x[i] > x[i+1]:
+                     temp = x[i]
+                     x[i] = x[i+1]
+                     x[i+1]= temp
+                     temp_y = y[i]
+                     y[i] = y[i+1]
+                     y[i+1] = temp_y
+                     swapped = True
+        return x
+        return y
+    def show_graph():
+            plt.clf()
+            plt.plot(x,y, marker="*")
+            plt.title("Calories consumed per day")
+            plt.xlabel("DAY")
+            plt.ylabel("Calories")
+            plt.show()
+            messagebox.showinfo(title="Days", message=str(x)) 
+            #make the sort function connected to a button and maybe take it out of the show grapgh function as it comes to early potentianlyy
+            # need to make a sorting algoritham for x (Days)    
+    def runboth():
+        sort_x(x,y) 
+        show_graph()                
+    present_graph= tk.Button(frame,bg="#C5228F",command=runboth)
+    present_graph.grid(row=3,column=1,columnspan=1,pady=40,sticky="ew")
+    
 
+        
+    
+    
 def login():
     username= username_entry.get()
     password = password_entry.get()
