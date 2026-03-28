@@ -50,13 +50,26 @@ def WorkoutBegun(main_window,list_Exercise):
     main_window.withdraw()
     workoutBegun.configure(bg='#333333')
     workoutBegun.geometry("590x500")
-    
     frame=tk.Frame(workoutBegun,bg='#333333')
     frame.pack(expand=True)
     
-    
-    CurrentW= tk.Label(frame,text=f"")
-    Reps = tk.Entry(frame,)
+    CurrentIndex=0
+    x=0
+    y=0
+    def DisplayNext():#connect this to a class to save adds steeze
+        x=int(Reps.get())
+        y=int(Sets.get())
+        if (x < 0 or x > 50) or (y < 0 or y >= 40):
+            messagebox.showinfo("Validity",message="put valid entries or to begin workout enter 0 into feilds")
+        else:
+            nonlocal CurrentIndex
+            CurrentW.config(text=f"current workout: {list_Exercise[CurrentIndex]}")
+            CurrentIndex= CurrentIndex + 1
+            
+            print(CurrentIndex)
+            return CurrentIndex
+    CurrentW= tk.Button(frame,text="Begin first Workout",font=("Arial",19),command= lambda: DisplayNext())
+    Reps = tk.Entry(frame)
     Reps_L = tk.Label(frame,text="How many reps were completed",bg='#333333', fg="#FFFFFF",font=("Arial",18))
     Sets = tk.Entry(frame)
     Sets_L= tk.Label(frame,text="How many sets were completed",bg='#333333', fg="#FFFFFF",font=("Arial",18))
@@ -64,6 +77,7 @@ def WorkoutBegun(main_window,list_Exercise):
     Back_button = tk.Button(frame,text="Back to home",bg="#333333", fg="#FFFFFF",font=("Arial",13), command= lambda: create_main_window())
     present_graph= tk.Button(frame,bg="#C5228F")
    
+    CurrentW.grid(row=0,column=1,)
     present_graph.grid(row=3,column=1,columnspan=1,pady=40,sticky="ew")
     generate_graph.grid(row=3,column=0,columnspan=1,pady=5,sticky="ew")
     Back_button.grid(row=3,column=3,pady=20)
