@@ -4,6 +4,7 @@ login_window = tk.Tk()
 login_window.title("login form")
 login_window.geometry("390x900")
 login_window.configure(bg='#333333')
+import random
 import json
 import os
 import matplotlib.pyplot as plt
@@ -38,9 +39,81 @@ def create_main_window():
     frame=tk.Frame(main_window,bg='#333333')
     #create labels
     workout_B= tk.Button(frame,text="calorie tracker",bg="#7F0587",font=("Arial",18), command= lambda: CalorieTracker(main_window))
+    workout_C= tk.Button(frame,text="Workout creator",bg="#7F0587",font=("Arial",18), command= lambda: WorkoutTracker(main_window))
     #insatiate button
     workout_B.grid(row=1,column=1,sticky="news")
+    workout_C.grid(row=0,column=1,sticky="news")
     frame.pack(expand=True)
+def WorkoutBegun(main_window,list_Exercise):
+    print(list_Exercise)
+    workoutBegun= tk.Toplevel(main_window)
+    main_window.withdraw()
+    workoutBegun.configure(bg='#333333')
+    workoutBegun.geometry("590x500")
+    
+    frame=tk.Frame(workoutBegun,bg='#333333')
+    frame.pack(expand=True)
+    
+    
+    CurrentW= tk.Label(frame,text=f"")
+    Reps = tk.Entry(frame,)
+    Reps_L = tk.Label(frame,text="How many reps were completed",bg='#333333', fg="#FFFFFF",font=("Arial",18))
+    Sets = tk.Entry(frame)
+    Sets_L= tk.Label(frame,text="How many sets were completed",bg='#333333', fg="#FFFFFF",font=("Arial",18))
+    generate_graph = tk.Label(frame,text="Saved data",bg="#C5228F", fg="#FFFFFF",font=("Arial",14))
+    Back_button = tk.Button(frame,text="Back to home",bg="#333333", fg="#FFFFFF",font=("Arial",13), command= lambda: create_main_window())
+    present_graph= tk.Button(frame,bg="#C5228F")
+   
+    present_graph.grid(row=3,column=1,columnspan=1,pady=40,sticky="ew")
+    generate_graph.grid(row=3,column=0,columnspan=1,pady=5,sticky="ew")
+    Back_button.grid(row=3,column=3,pady=20)
+    Reps_L.grid(row=1,column=0,pady=20)
+    Sets_L.grid(row=2,column=0,pady=20)
+    Reps.grid(row=1,column=1,pady=20)
+    Sets.grid(row=2,column=1,pady=20)
+def WorkoutTracker(main_window):
+    WorkoutTracker= tk.Toplevel(main_window)
+    main_window.withdraw()
+    WorkoutTracker.configure(bg='#333333')
+    WorkoutTracker.geometry("590x500")
+    
+    
+    frame=tk.Frame(WorkoutTracker,bg='#333333')
+    frame.pack(expand=True)
+    #Dictionary
+    workout = {
+    "Beginner":["pushups","squats","pull-ups"],
+    "Intermediate" : ["bicep curl","tricep extension","lateral raise"],
+    "Advanced": ["shoulder press","lateral pulldown","seated dips"]
+    }
+    
+    difficulty_var = tk.StringVar(value="Beginner")# allows user to select difficulty of workout
+    dropdown = tk.OptionMenu(frame, difficulty_var, "Beginner", "Intermediate", "Advanced")
+    dropdown.grid(row=2, column=2,pady=0)
+    Difficulty_L = tk.Label(frame,text="Select the difficulty of your workouts",font=("Arial",13))
+    Difficulty_L.grid(row=2,column=0,columnspan=2)
+    btn2 = tk.Button(frame, text="")
+    btn2.grid(row=2, column=1)
+    btn2.grid_forget() 
+    def work():#builds the workout and begins it
+        level = difficulty_var.get()
+        n=int(No_Workout.get())
+        list_Exercise=[]
+        for i in range(n):
+            excersice= random.choice(workout[level])
+            list_Exercise.append(excersice)
+        print("hi")
+        btn2.config(text= f"start exercise consisting {list_Exercise}",command= lambda:WorkoutBegun(main_window,list_Exercise))  # change text
+        btn2.grid()
+    No_Workout_L = tk.Label(frame,text="how many workouts do you want to do",font=("Arial",13))
+    No_Workout_L.grid(row=0,column=0,columnspan=2)
+    No_Workout= tk.Entry(frame)
+    No_Workout.grid(row=0,column=2,pady=0)
+    gene= tk.Button(frame,text="generate workout",command= lambda:work())
+    gene.grid(row=1,column=2)
+    Back_button = tk.Button(frame,text="Back to home",bg="#333333", fg="#FFFFFF",font=("Arial",13), command= lambda: create_main_window())
+    Back_button.grid(row=3,column=5,pady=20)
+    
 def CalorieTracker(main_window):
     calorietracker= tk.Toplevel(main_window)
     main_window.withdraw()
@@ -67,7 +140,7 @@ def CalorieTracker(main_window):
     y=[0]
     x=[0]
     # show grapgh is up here as you need to make the function come before the button
-    def sort_x(x,y):
+    def sort_x(x,y):#sorts the entries of the user into a chronological order
         x_list = int(x_entry.get())
         y_list = int(y_entry.get())
         y.append(y_list)
